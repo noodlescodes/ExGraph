@@ -11,7 +11,7 @@ public class ExParser {
 		String file = "ExSolution.dat";
 		BufferedReader br;
 		String line;
-		int[][] sol = new int[43][43];
+		int[][] sol = new int[13][13];
 
 		try {
 			br = new BufferedReader(new FileReader(file));

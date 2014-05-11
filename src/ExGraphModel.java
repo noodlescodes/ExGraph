@@ -9,8 +9,8 @@ import lpsolve.LpSolveException;
 public class ExGraphModel {
 
 	// problem variables
-	public int deltaL = 6; // minimum degree
-	public int deltaU = 7; // maximum degree
+	public int deltaL = 3; // minimum degree
+	public int deltaU = 4; // maximum degree
 	public int nVertices = deltaL * deltaU + 1; // number of vertices
 
 	// model variables
@@ -93,13 +93,13 @@ public class ExGraphModel {
 				lp.setBounds(getIndex(1, i), 1, 1.5);
 			}
 
-//			j = deltaL + deltaU + 1;
-//			for (int i = deltaU + 1; i <= deltaL + deltaU; i++) {
-//				for (int b = 1; b < deltaL; b++) {
-//					lp.setBounds(getIndex(i, j + (b - 1) * deltaL), 1, 1.5);
-//				}
-//				j++;
-//			}
+			j = deltaL + deltaU + 1;
+			for (int i = deltaU + 1; i <= deltaL + deltaU; i++) {
+				for (int b = 1; b < deltaL; b++) {
+					lp.setBounds(getIndex(i, j + (b - 1) * deltaL), 1, 1.5);
+				}
+				j++;
+			}
 			// ---end adding predefined constraints---
 
 			// ---begin a_{i,i}=0 constraints---
@@ -134,85 +134,86 @@ public class ExGraphModel {
 			// ---end a_{i,j}=a_{j,i} constraints---
 
 			// ---begin no triangles constraint---
-			if (VERBOSE) {
-				System.out.println("Beginning triangle constraints.");
-			}
-			j = 0;
-			for (int i = 1; i <= nVertices; i++) {
-				for (int j1 = i; j1 <= nVertices; j1++) {
-					for (int k = j1; k <= nVertices; k++) {
-						if (i != j1 && j1 != k && i != k) {
-							colno[j] = getIndex(i, j1);
-							row[j++] = 1;
-							colno[j] = getIndex(j1, k);
-							row[j++] = 1;
-							colno[j] = getIndex(i, k);
-							row[j++] = 1;
-							lp.addConstraintex(j, row, colno, LpSolve.LE, 2);
-							j = 0;
-						}
-					}
-				}
-			}
+			// if (VERBOSE) {
+			// System.out.println("Beginning triangle constraints.");
+			// }
+			// j = 0;
+			// for (int i = 1; i <= nVertices; i++) {
+			// for (int j1 = i; j1 <= nVertices; j1++) {
+			// for (int k = j1; k <= nVertices; k++) {
+			// if (i != j1 && j1 != k && i != k) {
+			// colno[j] = getIndex(i, j1);
+			// row[j++] = 1;
+			// colno[j] = getIndex(j1, k);
+			// row[j++] = 1;
+			// colno[j] = getIndex(i, k);
+			// row[j++] = 1;
+			// lp.addConstraintex(j, row, colno, LpSolve.LE, 2);
+			// j = 0;
+			// }
+			// }
+			// }
+			// }
 			// ---end no triangles constraint---
 
 			// ---begin no squares constraint---
-			if (VERBOSE) {
-				System.out.println("Beginning square constraints.");
-			}
-			j = 0;
-			for (int i = 1; i <= nVertices; i++) {
-				for (int j1 = 1; j1 <= nVertices; j1++) {
-					for (int k = 1; k <= nVertices; k++) {
-						for (int l = 1; l <= nVertices; l++) {
-							if (i != j1 && i != k && i != l && j1 != k && j1 != l && k != l) {
-								colno[j] = getIndex(i, j1);
-								row[j++] = 1;
-								colno[j] = getIndex(j1, k);
-								row[j++] = 1;
-								colno[j] = getIndex(k, l);
-								row[j++] = 1;
-								colno[j] = getIndex(l, i);
-								row[j++] = 1;
-								lp.addConstraintex(j, row, colno, LpSolve.LE, 3);
-								j = 0;
-							}
-						}
-					}
-				}
-			}
+			// if (VERBOSE) {
+			// System.out.println("Beginning square constraints.");
+			// }
+			// j = 0;
+			// for (int i = 1; i <= nVertices; i++) {
+			// for (int j1 = 1; j1 <= nVertices; j1++) {
+			// for (int k = 1; k <= nVertices; k++) {
+			// for (int l = 1; l <= nVertices; l++) {
+			// if (i != j1 && i != k && i != l && j1 != k && j1 != l && k != l)
+			// {
+			// colno[j] = getIndex(i, j1);
+			// row[j++] = 1;
+			// colno[j] = getIndex(j1, k);
+			// row[j++] = 1;
+			// colno[j] = getIndex(k, l);
+			// row[j++] = 1;
+			// colno[j] = getIndex(l, i);
+			// row[j++] = 1;
+			// lp.addConstraintex(j, row, colno, LpSolve.LE, 3);
+			// j = 0;
+			// }
+			// }
+			// }
+			// }
+			// }
 			// ---end no squares constraint---
 
 			// ---begin correct column sum constraint---
-			if (VERBOSE) {
-				System.out.println("Beginning column sum constraints.");
-			}
-			j = 0;
-			for (int j1 = deltaU + 1; j1 <= nVertices; j1++) {
-				for (int i = 1; i <= nVertices; i++) {
-					colno[j] = getIndex(i, j1);
-					row[j++] = 1;
-				}
-				lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaL);
-				j = 0;
-			}
-			// column between column 2 and column deltaU
-			j = 0;
-			for (int j1 = 2; j1 <= deltaU; j1++) {
-				for (int i = 1; i <= nVertices; i++) {
-					colno[j] = getIndex(i, j1);
-					row[j++] = 1;
-				}
-				lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaU);
-				j = 0;
-			}
-			j = 0;
-			for (int i = 1; i <= nVertices; i++) {
-				colno[j] = getIndex(i, 1);
-				row[j++] = 1;
-			}
-			// first column
-			lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaL);
+			// if (VERBOSE) {
+			// System.out.println("Beginning column sum constraints.");
+			// }
+			// j = 0;
+			// for (int j1 = deltaU + 1; j1 <= nVertices; j1++) {
+			// for (int i = 1; i <= nVertices; i++) {
+			// colno[j] = getIndex(i, j1);
+			// row[j++] = 1;
+			// }
+			// lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaL);
+			// j = 0;
+			// }
+			// // column between column 2 and column deltaU
+			// j = 0;
+			// for (int j1 = 2; j1 <= deltaU; j1++) {
+			// for (int i = 1; i <= nVertices; i++) {
+			// colno[j] = getIndex(i, j1);
+			// row[j++] = 1;
+			// }
+			// lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaU);
+			// j = 0;
+			// }
+			// j = 0;
+			// for (int i = 1; i <= nVertices; i++) {
+			// colno[j] = getIndex(i, 1);
+			// row[j++] = 1;
+			// }
+			// // first column
+			// lp.addConstraintex(j, row, colno, LpSolve.EQ, deltaL);
 			// ---end correct column sum constraint---
 
 			// ---begin correct row sum constraint---
@@ -248,20 +249,20 @@ public class ExGraphModel {
 			// ---end correct row sum constraint---
 
 			// ---begin a_{i,j}+a_{i+deltaL,j}<=1 constraints---
-			if (VERBOSE) {
-				System.out.println("Beginning a_{i,j}+a_{i+deltaL,j}<=1 constraints.");
-			}
-			j = 0;
-			for (int i = 2 + deltaL; i <= nVertices - deltaL; i++) {
-				for (int j1 = 2 + deltaL; j1 <= nVertices - deltaL; j1++) {
-					colno[j] = getIndex(i, j1);
-					row[j++] = 1;
-					colno[j] = getIndex(i, j1 + deltaL);
-					row[j++] = 1;
-					lp.addConstraintex(j, row, colno, LpSolve.LE, 1);
-					j = 0;
-				}
-			}
+			// if (VERBOSE) {
+			// System.out.println("Beginning a_{i,j}+a_{i+deltaL,j}<=1 constraints.");
+			// }
+			// j = 0;
+			// for (int i = 2 + deltaL; i <= nVertices - deltaL; i++) {
+			// for (int j1 = 2 + deltaL; j1 <= nVertices - deltaL; j1++) {
+			// colno[j] = getIndex(i, j1);
+			// row[j++] = 1;
+			// colno[j] = getIndex(i, j1 + deltaL);
+			// row[j++] = 1;
+			// lp.addConstraintex(j, row, colno, LpSolve.LE, 1);
+			// j = 0;
+			// }
+			// }
 			// ---end a_{i,j}+a_{i+deltaL,j}<=1 constraints---
 
 			if (VERBOSE) {
