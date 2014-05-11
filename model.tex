@@ -1,0 +1,100 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{amstext}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{amsthm}
+\usepackage{listings}
+
+\usepackage[hmargin=3.5cm,vmargin=1.5cm]{geometry}
+
+\begin{document}
+\noindent Model v2:
+
+\noindent Define $\delta:=$minimum degree.
+
+\noindent Define $\Delta:=$maximum degree.
+
+\noindent Define $n$ to be the number of vertices.
+
+\begin{equation}
+\label{eq:sym}
+a_{i,j}=a_{j,i} \text{ } \forall i,j: i\neq j
+\end{equation}
+
+\begin{equation}
+\label{eq:iizero}
+a_{i,i}=0 \text{ } \forall i
+\end{equation}
+
+\begin{equation}
+\label{eq:top}
+\sum_{j=1}^{n}a_{1,j}=\delta
+\end{equation}
+
+\begin{equation}
+\label{eq:twotoDelta}
+\sum_{j=1}^{n}a_{i,j}=\Delta \text{ } 1<i\leq\Delta
+\end{equation}
+
+\begin{equation}
+\label{eq:everythingelsesum}
+\sum_{j=1}^{n}a_{i,j}=\delta \text{ } \Delta<i\leq n
+\end{equation}
+
+Constraint \ref{eq:sym} ensures that the adjacency matrix is symmetric.\\
+
+Constraint \ref{eq:iizero} ensures the trace is 0.\\
+
+Constraint \ref{eq:top} ensures the top row sums to $\delta$.\\
+
+Constraint \ref{eq:twotoDelta} ensures the rows 2 through $\Delta$ sums to $\Delta$.\\
+
+Constraint \ref{eq:everythingelsesum} ensures the rest of the rows sum to $\delta$.\\
+
+As well as the above constraints the following initial conditions are given by algorithms as they are not simple to write in one line.
+
+\textcolor{blue}{The following adds the 0 matrix around the trace where appropriate.}
+
+\vspace{0.5em}
+for $c=0 < \delta$ \\
+\-\hspace{1.5cm}for $i=\Delta+1+c\delta < \Delta+\delta(c+1)$ \\
+\-\hspace{3cm}for $j=i+1\leq\Delta+\delta(c+1)$ \\
+\-\hspace{4.5cm}$a_{i,j}=0$
+
+\vspace{0.5em}
+\textcolor{blue}{The following adds the identity matrix where appropriate.}
+
+\vspace{0.5em}
+for $i=\Delta+1\leq\Delta+\delta$\\
+\-\hspace{1.5cm}for $b=1<\delta$ \\
+\-\hspace{3cm}$a_{i,j+(b-1)\delta}=1$
+
+\vspace{0.5em}
+\textcolor{blue}{The following sets the first row.}
+
+\vspace{0.5em}
+for $j=2\leq\Delta$\\
+\-\hspace{1.5cm} $a_{1,j}=1$
+
+\vspace{0.5em}
+\textcolor{blue}{The following sets the rows 2 through $\Delta$ appropriately.}
+
+\vspace{0.5em}
+for $i=2\leq\Delta$\\
+\-\hspace{1.5cm}for $j=1\leq\delta$\\
+\-\hspace{3cm}$a_{i,j+(i-1)\delta+1}=1$
+
+\vspace{0.5em}
+\noindent Notes:
+\begin{itemize}
+\item don't need column sum because of symmetry of the row sum.
+\item don't need triangle constraints hopefully because of further constraints to be added.
+\item don't need square constraints hopefully because of further constraints to be added.
+\end{itemize}
+\end{document}
