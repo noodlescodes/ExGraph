@@ -4,4 +4,4 @@ Notes:
 
  - when requiring that there is no four cycles, really slow. Need to come up with a better way to do that.
 
- - Need to construct a better way of checking that submatrix is orthogonal to other submatrix
+ - Need to construct a better way of checking that submatrix is orthogonal(?) to other submatrix
