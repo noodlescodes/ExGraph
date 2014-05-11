@@ -1,3 +1,5 @@
+// Requires the solution to be in a different format to what the program will output currently. Going to figure out a better way to parse it.
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
