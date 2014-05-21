@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 public class DrawGraph extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	int WIDTH = 1920;
 	int HEIGHT = 1000;
 	int[][] nodes;
@@ -65,6 +66,7 @@ public class DrawGraph extends JFrame {
 				}
 				count++;
 			}
+			br.close();
 		}
 		catch(Exception e) {
 			System.out.println("Couldn't read file");

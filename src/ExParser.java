@@ -11,7 +11,8 @@ public class ExParser {
 		String file = "ExSolution.dat";
 		BufferedReader br;
 		String line;
-		int[][] sol = new int[13][13];
+		int[][] sol = new int[43][43];
+		int numberEdges = 0;
 
 		try {
 			br = new BufferedReader(new FileReader(file));
@@ -34,6 +35,9 @@ public class ExParser {
 
 		for (int i = 0; i < sol.length; i++) {
 			for (int j = 0; j < sol.length; j++) {
+				if(sol[i][j] == 1) {
+					numberEdges++;
+				}
 				if (j + 1 < sol.length) {
 					System.out.print(sol[i][j] + ",");
 				} else {
@@ -58,5 +62,7 @@ public class ExParser {
 			w.close();
 		} catch (IOException e) {
 		}
+		
+		System.out.println("Number of edges: " + numberEdges / 2);
 	}
 }

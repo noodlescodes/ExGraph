@@ -55,7 +55,7 @@ public class ExGraphModel {
 				System.out.println("Setting up model name.");
 			}
 			// setup model name
-			lp.setLpName("Ex graph");
+			lp.setLpName("Ex graph v1");
 
 			if (VERBOSE) {
 				System.out.println("Setting up variable names.");
