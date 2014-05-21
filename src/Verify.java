@@ -44,7 +44,7 @@ public class Verify {
 							}
 							if(sum > 3) {
 								squares++;
-								System.out.println("i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,l: " + k + "," + l + "; l,i: " + l + "," + i);  
+								System.out.println("Square #" + squares + ": i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,l: " + k + "," + l + "; l,i: " + l + "," + i);  
 							}
 						}
 					}
@@ -64,7 +64,7 @@ public class Verify {
 						}
 						if(sum > 2) {
 							triangles++;
-							System.out.println("i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,i: " + k + "," + i);
+							System.out.println("Triangle #" + triangles + ": i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,i: " + k + "," + i);
 						}
 					}
 				}
