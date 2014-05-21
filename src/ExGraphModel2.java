@@ -9,8 +9,8 @@ import lpsolve.LpSolveException;
 public class ExGraphModel2 {
 
 	// problem variables
-	public int deltaL = 6; // minimum degree
-	public int deltaU = 7; // maximum degree
+	public int deltaL = 7; // minimum degree
+	public int deltaU = 8; // maximum degree
 	public int nVertices = deltaL * deltaU + 1; // number of vertices
 
 	// model variables
@@ -215,10 +215,10 @@ public class ExGraphModel2 {
 				System.out.println("Beginning square constraints.");
 			}
 			j = 0;
-			for(int i = deltaL; i <= nVertices; i++) {
+			for(int i = deltaL + deltaU; i <= nVertices; i++) {
 				for(int j1 = i + 1; j1 <= nVertices; j1++) {
 					for(int k = j1 + 1; k <= nVertices; k++) {
-						for(int l = i + 1; l <= nVertices; l++) {
+						for(int l = k + 1; l <= nVertices; l++) {
 							if(i != j1 && i != k && i != l && j1 != k && j1 != l && k != l) {
 								colno[j] = getIndex(i, j1);
 								row[j++] = 1;
@@ -279,7 +279,6 @@ public class ExGraphModel2 {
 					}
 				}
 			}
-
 			// ---end orthogonal submatrix---
 
 			// ---begin correct row sum constraint---
