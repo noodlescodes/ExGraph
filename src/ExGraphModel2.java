@@ -187,6 +187,56 @@ public class ExGraphModel2 {
 			}
 			// ---end one 1 in each row/column submatrix---
 
+			// ---begin no triangles constraint---
+			if(VERBOSE) {
+				System.out.println("Beginning triangle constraints.");
+			}
+			j = 0;
+			for(int i = 1; i <= nVertices; i++) {
+				for(int j1 = i + 1; j1 <= nVertices; j1++) {
+					for(int k = j1 + 1; k <= nVertices; k++) {
+						if(i != j1 && j1 != k && i != k) {
+							colno[j] = getIndex(i, j1);
+							row[j++] = 1;
+							colno[j] = getIndex(j1, k);
+							row[j++] = 1;
+							colno[j] = getIndex(i, k);
+							row[j++] = 1;
+							lp.addConstraintex(j, row, colno, LpSolve.LE, 2);
+							j = 0;
+						}
+					}
+				}
+			}
+			// ---end no triangles constraint---
+
+			// ---begin no squares constraint---
+			if(VERBOSE) {
+				System.out.println("Beginning square constraints.");
+			}
+			j = 0;
+			for(int i = deltaL; i <= nVertices; i++) {
+				for(int j1 = i + 1; j1 <= nVertices; j1++) {
+					for(int k = j1 + 1; k <= nVertices; k++) {
+						for(int l = i + 1; l <= nVertices; l++) {
+							if(i != j1 && i != k && i != l && j1 != k && j1 != l && k != l) {
+								colno[j] = getIndex(i, j1);
+								row[j++] = 1;
+								colno[j] = getIndex(j1, k);
+								row[j++] = 1;
+								colno[j] = getIndex(k, l);
+								row[j++] = 1;
+								colno[j] = getIndex(l, i);
+								row[j++] = 1;
+								lp.addConstraintex(j, row, colno, LpSolve.LE, 3);
+								j = 0;
+							}
+						}
+					}
+				}
+			}
+			// ---end no squares constraint---
+
 			// ---begin orthogonal submatrix---
 			if(VERBOSE) {
 				System.out.println("Beginning orthogonal submatrix constraints.");

@@ -1,7 +1,10 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Verify {
 	@SuppressWarnings("unused")
@@ -9,6 +12,8 @@ public class Verify {
 		int nVertices = 43;
 
 		int[][] sol = new int[nVertices][nVertices];
+		int[][] triangleInGraph = new int[nVertices][nVertices];
+		int[][] squaresInGraph = new int[nVertices][nVertices];
 
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("ExSolution13CSV.csv"));
@@ -44,7 +49,8 @@ public class Verify {
 							}
 							if(sum > 3) {
 								squares++;
-								System.out.println("Square #" + squares + ": i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,l: " + k + "," + l + "; l,i: " + l + "," + i);  
+								System.out.println("Square #" + squares + ": i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,l: " + k + "," + l + "; l,i: " + l + "," + i);
+								squaresInGraph[i][j1] = 1;
 							}
 						}
 					}
@@ -65,6 +71,7 @@ public class Verify {
 						if(sum > 2) {
 							triangles++;
 							System.out.println("Triangle #" + triangles + ": i,j: " + i + "," + j1 + "; j,k: " + j1 + "," + k + "; k,i: " + k + "," + i);
+							triangleInGraph[i][j1] = 1;
 						}
 					}
 				}
@@ -80,6 +87,38 @@ public class Verify {
 				System.out.println("Sum of row " + i + " is: " + sum);
 				sum = 0;
 			}
+		}
+		
+		try {
+			PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter("triangles.csv")));
+			for (int i = 0; i < triangleInGraph.length; i++) {
+				for (int j = 0; j < triangleInGraph.length; j++) {
+					if (j + 1 < triangleInGraph.length) {
+						w.print(triangleInGraph[i][j] + ",");
+					} else {
+						w.print(triangleInGraph[i][j]);
+					}
+				}
+				w.println("");
+			}
+			w.close();
+		} catch (IOException e) {
+		}
+		
+		try {
+			PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter("squares.csv")));
+			for (int i = 0; i < squaresInGraph.length; i++) {
+				for (int j = 0; j < squaresInGraph.length; j++) {
+					if (j + 1 < squaresInGraph.length) {
+						w.print(squaresInGraph[i][j] + ",");
+					} else {
+						w.print(squaresInGraph[i][j]);
+					}
+				}
+				w.println("");
+			}
+			w.close();
+		} catch (IOException e) {
 		}
 
 		System.out.println("Maxt: " + maxt);

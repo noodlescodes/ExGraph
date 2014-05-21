@@ -9,8 +9,8 @@ import lpsolve.LpSolveException;
 public class ExGraphModel {
 
 	// problem variables
-	public int deltaL = 3; // minimum degree
-	public int deltaU = 4; // maximum degree
+	public int deltaL = 5; // minimum degree
+	public int deltaU = 6; // maximum degree
 	public int nVertices = deltaL * deltaU + 1; // number of vertices
 
 	// model variables
@@ -27,7 +27,8 @@ public class ExGraphModel {
 			PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter("timeDump.txt", true)));
 			w.println("EX: " + t);
 			w.close();
-		} catch (IOException e) {
+		}
+		catch(IOException e) {
 		}
 	}
 
@@ -46,56 +47,56 @@ public class ExGraphModel {
 		row = new double[nVertices * nVertices];
 
 		lp = LpSolve.makeLp(0, nVertices * nVertices);
-		if (lp.getLp() == 0) {
+		if(lp.getLp() == 0) {
 			ret = 1;
 		}
 
-		if (ret == 0) {
-			if (VERBOSE) {
+		if(ret == 0) {
+			if(VERBOSE) {
 				System.out.println("Setting up model name.");
 			}
 			// setup model name
 			lp.setLpName("Ex graph v1");
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Setting up variable names.");
 			}
 			// setup variable names
 			int loop = 1;
-			for (int i = 1; i <= nVertices; i++) {
-				for (int j1 = 1; j1 <= nVertices; j1++) {
+			for(int i = 1; i <= nVertices; i++) {
+				for(int j1 = 1; j1 <= nVertices; j1++) {
 					lp.setColName(loop, createString(i, j1));
 					lp.setBinary(loop++, true);
 				}
 			}
 
 			double[] weights = new double[nVertices];
-			for (int i = 0; i < weights.length; i++) {
+			for(int i = 0; i < weights.length; i++) {
 				weights[i] = 1;
 			}
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Setting build mode.");
 			}
 			// setup build mode
 			lp.setAddRowmode(true);
 
 			// ---begin adding predefined constraints---
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Adding predefined constraints.");
 			}
-			for (int i = 2; i <= deltaU; i++) {
-				for (int j1 = 1; j1 <= deltaL; j1++) {
+			for(int i = 2; i <= deltaU; i++) {
+				for(int j1 = 1; j1 <= deltaL; j1++) {
 					lp.setBounds(getIndex(i, j1 + (i - 1) * deltaL + 1), 1, 1.5);
 				}
 			}
-			for (int i = 2; i <= deltaU; i++) {
+			for(int i = 2; i <= deltaU; i++) {
 				lp.setBounds(getIndex(1, i), 1, 1.5);
 			}
 
 			j = deltaL + deltaU + 1;
-			for (int i = deltaU + 1; i <= deltaL + deltaU; i++) {
-				for (int b = 1; b < deltaL; b++) {
+			for(int i = deltaU + 1; i <= deltaL + deltaU; i++) {
+				for(int b = 1; b < deltaL; b++) {
 					lp.setBounds(getIndex(i, j + (b - 1) * deltaL), 1, 1.5);
 				}
 				j++;
@@ -103,10 +104,10 @@ public class ExGraphModel {
 			// ---end adding predefined constraints---
 
 			// ---begin a_{i,i}=0 constraints---
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Beginning a_{i,i}=0 constraints.");
 			}
-			for (int i = 1; i <= nVertices; i++) {
+			for(int i = 1; i <= nVertices; i++) {
 				colno[j] = getIndex(i, i);
 				row[j++] = 1;
 				lp.addConstraintex(j, row, colno, LpSolve.EQ, 0);
@@ -115,13 +116,13 @@ public class ExGraphModel {
 			// ---end a_{i,i}=0 constraints---
 
 			// ---begin a_{i,j}=a_{j,i} constraints---
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Beginning a_{i,j}=a_{j,i} constraints.");
 			}
 			j = 0;
-			for (int i = 1; i <= nVertices; i++) {
-				for (int j1 = 1; j1 <= nVertices; j1++) {
-					if (i != j1) {
+			for(int i = 1; i <= nVertices; i++) {
+				for(int j1 = 1; j1 <= nVertices; j1++) {
+					if(i != j1) {
 						colno[j] = getIndex(i, j1);
 						row[j++] = 1;
 						colno[j] = getIndex(j1, i);
@@ -134,54 +135,53 @@ public class ExGraphModel {
 			// ---end a_{i,j}=a_{j,i} constraints---
 
 			// ---begin no triangles constraint---
-			// if (VERBOSE) {
-			// System.out.println("Beginning triangle constraints.");
-			// }
-			// j = 0;
-			// for (int i = 1; i <= nVertices; i++) {
-			// for (int j1 = i; j1 <= nVertices; j1++) {
-			// for (int k = j1; k <= nVertices; k++) {
-			// if (i != j1 && j1 != k && i != k) {
-			// colno[j] = getIndex(i, j1);
-			// row[j++] = 1;
-			// colno[j] = getIndex(j1, k);
-			// row[j++] = 1;
-			// colno[j] = getIndex(i, k);
-			// row[j++] = 1;
-			// lp.addConstraintex(j, row, colno, LpSolve.LE, 2);
-			// j = 0;
-			// }
-			// }
-			// }
-			// }
+			if(VERBOSE) {
+				System.out.println("Beginning triangle constraints.");
+			}
+			j = 0;
+			for(int i = 1; i <= nVertices; i++) {
+				for(int j1 = i + 1; j1 <= nVertices; j1++) {
+					for(int k = j1 + 1; k <= nVertices; k++) {
+						if(i != j1 && j1 != k && i != k) {
+							colno[j] = getIndex(i, j1);
+							row[j++] = 1;
+							colno[j] = getIndex(j1, k);
+							row[j++] = 1;
+							colno[j] = getIndex(i, k);
+							row[j++] = 1;
+							lp.addConstraintex(j, row, colno, LpSolve.LE, 2);
+							j = 0;
+						}
+					}
+				}
+			}
 			// ---end no triangles constraint---
 
 			// ---begin no squares constraint---
-			// if (VERBOSE) {
-			// System.out.println("Beginning square constraints.");
-			// }
-			// j = 0;
-			// for (int i = 1; i <= nVertices; i++) {
-			// for (int j1 = 1; j1 <= nVertices; j1++) {
-			// for (int k = 1; k <= nVertices; k++) {
-			// for (int l = 1; l <= nVertices; l++) {
-			// if (i != j1 && i != k && i != l && j1 != k && j1 != l && k != l)
-			// {
-			// colno[j] = getIndex(i, j1);
-			// row[j++] = 1;
-			// colno[j] = getIndex(j1, k);
-			// row[j++] = 1;
-			// colno[j] = getIndex(k, l);
-			// row[j++] = 1;
-			// colno[j] = getIndex(l, i);
-			// row[j++] = 1;
-			// lp.addConstraintex(j, row, colno, LpSolve.LE, 3);
-			// j = 0;
-			// }
-			// }
-			// }
-			// }
-			// }
+			if(VERBOSE) {
+				System.out.println("Beginning square constraints.");
+			}
+			j = 0;
+			for(int i = deltaL; i <= nVertices; i++) {
+				for(int j1 = i + 1; j1 <= nVertices; j1++) {
+					for(int k = i + 1; k <= nVertices; k++) {
+						for(int l = i + 1; l <= nVertices; l++) {
+							if(i != j1 && i != k && i != l && j1 != k && j1 != l && k != l) {
+								colno[j] = getIndex(i, j1);
+								row[j++] = 1;
+								colno[j] = getIndex(j1, k);
+								row[j++] = 1;
+								colno[j] = getIndex(k, l);
+								row[j++] = 1;
+								colno[j] = getIndex(l, i);
+								row[j++] = 1;
+								lp.addConstraintex(j, row, colno, LpSolve.LE, 3);
+								j = 0;
+							}
+						}
+					}
+				}
+			}
 			// ---end no squares constraint---
 
 			// ---begin correct column sum constraint---
@@ -217,12 +217,12 @@ public class ExGraphModel {
 			// ---end correct column sum constraint---
 
 			// ---begin correct row sum constraint---
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Beginning row sum constraints.");
 			}
 			j = 0;
-			for (int i = deltaU + 1; i <= nVertices; i++) {
-				for (int j1 = 1; j1 <= nVertices; j1++) {
+			for(int i = deltaU + 1; i <= nVertices; i++) {
+				for(int j1 = 1; j1 <= nVertices; j1++) {
 					colno[j] = getIndex(i, j1);
 					row[j++] = 1;
 				}
@@ -231,8 +231,8 @@ public class ExGraphModel {
 			}
 			// rows between row 2 and row deltaU
 			j = 0;
-			for (int i = 2; i <= deltaU; i++) {
-				for (int j1 = 1; j1 <= nVertices; j1++) {
+			for(int i = 2; i <= deltaU; i++) {
+				for(int j1 = 1; j1 <= nVertices; j1++) {
 					colno[j] = getIndex(i, j1);
 					row[j++] = 1;
 				}
@@ -240,7 +240,7 @@ public class ExGraphModel {
 				j = 0;
 			}
 			j = 0;
-			for (int j1 = 1; j1 <= nVertices; j1++) {
+			for(int j1 = 1; j1 <= nVertices; j1++) {
 				colno[j] = getIndex(1, j1);
 				row[j++] = 1;
 			}
@@ -265,13 +265,13 @@ public class ExGraphModel {
 			// }
 			// ---end a_{i,j}+a_{i+deltaL,j}<=1 constraints---
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Turning off build mode.");
 			}
 			// turn off build mode
 			lp.setAddRowmode(false);
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Beginning objective function.");
 			}
 			// ---begin objective function---
@@ -286,7 +286,7 @@ public class ExGraphModel {
 			lp.setMaxim();
 			// ---end objective function---
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Writing model to file.");
 			}
 			// write model to file
@@ -296,34 +296,36 @@ public class ExGraphModel {
 			lp.setVerbose(LpSolve.NORMAL);
 
 			// ---begin solving---
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Presovling.");
 			}
 			lp.setPresolve(LpSolve.PRESOLVE_BOUNDS | LpSolve.PRESOLVE_COLS | LpSolve.PRESOLVE_ROWS, lp.getPresolveloops());
 
-			if (VERBOSE) {
+			if(VERBOSE) {
 				System.out.println("Starting to sovle the model. This may take a while.");
 			}
 
 			ret = lp.solve();
-			if (ret == LpSolve.OPTIMAL) {
+			if(ret == LpSolve.OPTIMAL) {
 				ret = 0;
-			} else {
+			}
+			else {
 				ret = 5;
 			}
 			// ---end solving---
 		}
 
-		if (VERBOSE) {
+		if(VERBOSE) {
 			System.out.println("Beginning output.");
 		}
 
-		if (ret == 0) {
+		if(ret == 0) {
 			lp.printObjective();
 			lp.setOutputfile("ExSolution.dat");
 			lp.printSolution(1);
 			lp.printConstraints(1);
-		} else {
+		}
+		else {
 			System.out.println("No solution found.");
 		}
 		// ---end output---
@@ -337,7 +339,8 @@ public class ExGraphModel {
 		System.out.println("Start time: " + date);
 		try {
 			new ExGraphModel().execute();
-		} catch (LpSolveException e) {
+		}
+		catch(LpSolveException e) {
 		}
 		long totalTime = (System.currentTimeMillis() - startTime);
 		System.out.println("Total time: " + totalTime);

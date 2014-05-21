@@ -17,8 +17,8 @@ public class DrawGraph extends JFrame {
 	int[][] edges;
 	int[][] edgeCoords;
 	int[][] arcCoords;
-	int deltaL = 3;
-	int deltaU = 4;
+	int deltaL = 6;
+	int deltaU = 7;
 	int onesUp = 0;
 	int onesDown = 0;
 
@@ -108,7 +108,7 @@ public class DrawGraph extends JFrame {
 		super.paintComponents(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setStroke(new BasicStroke(2));
-		
+
 		Random rand = new Random(); // used for random colours
 
 		for(int i = 0; i < edgeCoords.length; i++) {
@@ -123,7 +123,21 @@ public class DrawGraph extends JFrame {
 
 		// Draw the ovals after the lines
 		g2.setColor(new Color(0, 0, 0));
+		boolean f = true;
+		int count = -1;
 		for(int i = 0; i < nodes.length; i++) {
+			if(i >= deltaU) {
+				count++;
+				if(count % deltaL == 0 && f) {
+					g2.setColor(new Color(0, 0, 255));
+					f = !f;
+				}
+				else if(count % deltaL == 0 && !f) {
+					g2.setColor(new Color(255, 0, 0));
+					f = !f;
+				}
+			}
+
 			g2.fillOval(nodes[i][0], nodes[i][1], 40, 40);
 		}
 	}
@@ -132,6 +146,8 @@ public class DrawGraph extends JFrame {
 		DrawGraph dg = new DrawGraph();
 		dg.calculatePosition();
 		dg.read("ExSolution13CSV.csv");
+		// dg.read("triangles.csv");
+		// dg.read("squares.csv");
 		dg.generateEdges();
 		dg.generateArcs();
 	}
